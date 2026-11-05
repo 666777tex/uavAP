@@ -97,6 +97,23 @@ The planning and control stack of uavAP is aimed to be as modular as possible, h
   <li>Controller calculates the ControllerOutput based on the ControllerTarget provided by the LocalPlanner</li>
 </ul>
 
+## Docker
+
+To build a docker image named 'uavap':
+```shell
+docker build -t uavap .
+```
+
+Create a container named 'uavap-container' from the 'uavap' image and open an interactive shell:
+```shell
+docker run -it --name uavap-container uavap bash
+```
+
+Open another shell in the same running container:
+```shell
+docker exec -it uavap-container bash
+```
+
 ## References
 
 Theile, M., Dantsker, O., Nai, R., Caccamo, M., & Yu, S. (2020). uavAP: A Modular Autopilot Framework for UAVs. In AIAA AVIATION 2020 FORUM (p. 3268).

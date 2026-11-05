@@ -1,0 +1,15 @@
+{
+    "camera" : {
+        "position_on_aircraft" : {
+            "x" : 0.0,
+            "y" : -2.0,  
+            "z" : 0.0
+        },
+        "orientation" : {
+            "roll"  : 0,
+            "pitch" : -90,
+            "yaw"   : 0
+        },
+        "field_of_view" : 100
+    }
+}
