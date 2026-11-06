@@ -1,3 +1,5 @@
+#include "plugin.h"
+
 #include <cstring>
 #include <uavEE/extern/xPlane/CHeaders/XPLM/XPLMCamera.h>
 #include <uavEE/extern/xPlane/CHeaders/XPLM/XPLMDataAccess.h>
@@ -12,7 +14,7 @@ struct PlanePose{
     double x,y,z;
     float pitch;
     float roll;
-    float yaw;
+    float heading;
 };
 
 static XPLMDataRef gLocalX = nullptr;
@@ -20,25 +22,25 @@ static XPLMDataRef gLocalY = nullptr;
 static XPLMDataRef gLocalZ = nullptr;
 static XPLMDataRef gPitch = nullptr;
 static XPLMDataRef gRoll = nullptr;
-static XPLMDataRef gYaw = nullptr;
+static XPLMDataRef gHeading = nullptr;
 
 static void InitDatarefs(){
-    gLocalX = XPLMFindDataRef('sim/flightmodel/position/local_x');
-    gLocalY = XPLMFindDataRef('sim/flightmodel/position/local_y');
-    gLocalZ = XPLMFindDataRef('sim/flightmodel/position/local_z');
-    gPitch = XPLMFindDataRef('sim/flightmodel/position/theta');
-    gRoll = XPLMFindDataRef('sim/flightmodel/position/phi');
-    gYaw = XPLMFindDataRef('sim/flightmodel/position/psi');
+    gLocalX = XPLMFindDataRef("sim/flightmodel/position/local_x");
+    gLocalY = XPLMFindDataRef("sim/flightmodel/position/local_y");
+    gLocalZ = XPLMFindDataRef("sim/flightmodel/position/local_z");
+    gPitch = XPLMFindDataRef("sim/flightmodel/position/theta");
+    gRoll = XPLMFindDataRef("sim/flightmodel/position/phi");
+    gHeading = XPLMFindDataRef("sim/flightmodel/position/psi");
 }
 
 static PlanePose ReadPlanePose (){
     PlanePose p;
-    p.x = XPLMGetDatad_f(gLocalX);
-    p.y = XPLMGetDatad_f(gLocalY);
-    p.z = XPLMGetDatad_f(gLocalZ);
-    p.pitch = XPLMGetDatad_f(gPitch);
-    p.roll = XPLMGetDatad_f(gRoll);
-    p.yaw = XPLMGetDatad_f(gYaw);
+    p.x = XPLMGetDataf(gLocalX);
+    p.y = XPLMGetDataf(gLocalY);
+    p.z = XPLMGetDataf(gLocalZ);
+    p.pitch = XPLMGetDataf(gPitch);
+    p.roll = XPLMGetDataf(gRoll);
+    p.heading = XPLMGetDataf(gHeading);
     return p;
 }
 
@@ -47,13 +49,18 @@ static int CamPosition(
     int losingControl,
     void* inRefCon
 ){
-    if (losingControl == 0 || outCameraPosition == nullptr)
+    if (losingControl != 0 || outCameraPosition == nullptr)
         return 0;
     
     PlanePose plane = ReadPlanePose();
 
-    outCameraPosition->x = static_cast<float>(plane.x);
-    outCameraPosition->y = static_cast<float>(plane.y); // minus the difference, differ from models 
-    outCameraPosition->z = static_cast<float>(plane.z);
+    outCameraPosition->x = plane.x;
+    outCameraPosition->y = plane.y - 5.0f; // minus the difference, differ from models 
+    outCameraPosition->z = plane.z;
+    outCameraPosition->pitch = plane.pitch - 90.0f;
+    outCameraPosition->roll = plane.roll;
+    outCameraPosition->heading = plane.heading;
+    outCameraPosition->zoom = 1.0f;
 
+    return 1;
 }
