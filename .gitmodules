@@ -8,11 +8,11 @@
 	branch = main
 [submodule "extern/uavGS"]
 	path = extern/uavGS
-	url = https://github.com/theilem/uavGS
+	url = https://github.com/666777tex/uavGS
 	branch = main
 [submodule "extern/uavEE"]
 	path = extern/uavEE
-	url = https://github.com/theilem/uavEE.git
+	url = https://github.com/666777tex/uavEE
 	branch = main
 [submodule "extern/pybind11"]
 	path = extern/pybind11
